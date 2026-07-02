@@ -5,10 +5,14 @@ const {
     getAllArticle,
     getArticleById,
     updateArticleById,
-    deleteArticleById
+    deleteArticleById,
+    searchArticles
 } = require("../controllers/article.controller.js");
 
 const router = express.Router();
+
+// Search route
+router.get("/articles/search", searchArticles);
 
 router.post("/articles", postArticle);
 router.get("/articles", getAllArticle);

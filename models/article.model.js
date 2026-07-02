@@ -20,4 +20,11 @@ const articleSchema = new mongoose.Schema(
     { timestamps: true }, // Auto createdAt/updatedAt
 );
 
+// Text index for search
+articleSchema.index({
+    title: "text",
+    content: "text",
+    author: "text"
+});
+
 module.exports = mongoose.model('Article', articleSchema);
