@@ -7,12 +7,18 @@ const postArticle = async (req, res, next) => {
         title: Joi.string().min(5).required(),
         content: Joi.string().min(20).required(),
         author: Joi.string().optional().default("Guest"),
+        category: Joi.string().default("General"),
+        tags: Joi.array().items(Joi.string()).default([]),
+        published: Joi.boolean().default(true),
     });
 
     const { error, value } = articleSchema.validate(req.body);
 
     if (error || !value) {
-        return res.status(400).json("Please provide article title and content");
+        return res.status(400).json({
+            message: "Please provide article title and content",
+            error: error.details[0].message,
+        });
     }
 
     try {
@@ -43,7 +49,7 @@ const getAllArticle = async (req, res, next) => {
 
 
         if (!articles) {
-            
+
         }
 
         return res.status(200).json({
@@ -78,13 +84,19 @@ const updateArticleById = async (req, res, next) => {
     const articleSchema = Joi.object({
         title: Joi.string().min(5).optional(),
         content: Joi.string().min(20).optional(),
-        author: Joi.string().optional()
+        author: Joi.string().optional(),
+        category: Joi.string(),
+        tags: Joi.array().items(Joi.string()),
+        published: Joi.boolean(),
     }).min(1);
 
     const { error, value } = articleSchema.validate(req.body);
 
     if (error || !value) {
-        return res.status(400).json('Please provide article title and content');
+        return res.status(400).json({
+            message: "Please provide article title and content",
+            error: error.details[0].message,
+        });
     }
 
     try {
@@ -123,7 +135,8 @@ const deleteArticleById = async (req, res, next) => {
         }
 
         res.status(200).send({
-            message: "Article deleted"
+            message: "Article deleted",
+            data: article,
         });
     } catch (error) {
         next(error);
@@ -139,6 +152,12 @@ const searchArticles = async (req, res, next) => {
                 $search: keyword,
             },
         });
+
+        if (!keyword) {
+            return res.status(400).json({
+                error: "Search keyword is required",
+            });
+        }
 
         res.status(200).json({
             message: "Articles found",
