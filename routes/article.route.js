@@ -9,15 +9,22 @@ const {
     searchArticles
 } = require("../controllers/article.controller.js");
 
+const {
+    validateCreateArticle,
+    validateUpdateArticle,
+} = require("../validations/article.validation.js");
+
+const requireAuth = require("../middlewares/requireAuth.js");
+
 const router = express.Router();
 
 // Search route
-router.get("/articles/search", searchArticles);
+router.get("/articles/search", requireAuth, searchArticles);
 
-router.post("/articles", postArticle);
-router.get("/articles", getAllArticle);
-router.get("/articles/:id", getArticleById);
-router.put("/articles/:id", updateArticleById);
-router.delete("/articles/:id", deleteArticleById);
+router.post("/articles", requireAuth, validateCreateArticle, postArticle);
+router.get("/articles", requireAuth, getAllArticle);
+router.get("/articles/:id", requireAuth, getArticleById);
+router.put("/articles/:id", requireAuth, validateUpdateArticle, updateArticleById);
+router.delete("/articles/:id", requireAuth, deleteArticleById);
 
 module.exports = router;
