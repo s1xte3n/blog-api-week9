@@ -5,19 +5,6 @@ const createArticleSchema = Joi.object({
     content: Joi.string().min(20).required(),
 });
 
-const validateArticle = (req, res, next) => {
-    console.log(req.body);
-    const { error } = CreateArticleSchema.validate(req.body);
-
-    if (error) {
-        return res.status(400).json({
-            error: error.details[0].message
-        });
-    }
-
-    next();
-};
-
 const updateArticleSchema = Joi.object({
     title: Joi.string().min(5).optional(),
     content: Joi.string().min(20).optional(),

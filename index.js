@@ -1,41 +1,10 @@
 require('dotenv').config();
+const app = require('./src/app');
+const connectDB = require('./src/config/connectDB');
 
-const express = require("express");
-const cors = require("cors");
+const PORT = process.env.PORT || 3007
 
-const connectDB = require("./database/connectDB.js");
-
-const RequestLogger = require("./middlewares/logger.js");
-const errorhandler = require("./middlewares/errorHandler.js");
-
-const ArticleRoutes = require("./routes/article.route.js");
-const UserRoutes = require("./routes/user.route.js");
-
-const app = express();
-
-const PORT = process.env.PORT || 3007;
-
-connectDB();
-
-app.use(cors({
-    origin: "*",
-}));
-
-app.use(express.json());
-
-app.use(RequestLogger);
-
-app.use("/api", ArticleRoutes);
-app.use("/api/users", UserRoutes);
-
-app.use(errorhandler);
-
-app.get("/", (req, res) => {
-    res.json({
-        message: "Blog API is running",
-    });
-})
-
-app.listen(PORT, ()=>{
+app.listen(PORT, async ()=>{
+    await connectDB();
     console.log(`Server is listening on Port ${PORT}`);
 });
